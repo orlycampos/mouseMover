@@ -5,7 +5,7 @@ import java.net.URL;
 
 public class MouseMover {
     public static void main(String[] args) throws IOException {
-    final Mover mover = new Mover(30000, true, 30);
+    final Mover mover = new Mover(45000, true, 30);
 
     Thread thread = new Thread(mover);
 		mover.setStartStop(true);
