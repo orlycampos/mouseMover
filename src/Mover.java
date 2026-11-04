@@ -3,6 +3,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
+import java.time.LocalTime;
+import java.time.ZoneId;
 
 public class Mover  implements Runnable {
 
@@ -12,7 +14,11 @@ public class Mover  implements Runnable {
     // How often to look at the idle time
     static final long CHECK_EVERY_MS = 1000;
 
-    static final String OS = System.getProperty("os.name").toLowerCase();
+    // Quit for the day at this time (checked every loop, so it also catches waking from sleep)
+    static final ZoneId STOP_ZONE = ZoneId.of("America/Costa_Rica");
+    static final LocalTime STOP_AT = LocalTime.of(17, 0);
+
+    static final String OS =System.getProperty("os.name").toLowerCase();
 
     // Windows functions for reading idle time, set up on first use
     static MethodHandle getLastInputInfo, getTickCount;
@@ -42,6 +48,11 @@ public class Mover  implements Runnable {
         }
 
         while (startStop) {
+
+            if (!LocalTime.now(STOP_ZONE).isBefore(STOP_AT)) {
+                System.out.println("It's past " + STOP_AT + " Costa Rica time, exiting");
+                System.exit(0);
+            }
 
             Point current = null;
             try
